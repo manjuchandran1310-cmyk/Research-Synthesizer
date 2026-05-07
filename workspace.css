@@ -1,0 +1,739 @@
+/* ── Reset & base ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  background: #f5f4f0;
+  color: #1a1a2e;
+}
+
+/* ── Papers area ───────────────────────────────────────────────────── */
+.papers-area {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* ── Individual paper column ───────────────────────────────────────── */
+.paper-column {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  border-right: 1px solid #e0ddd8;
+  background: #fff;
+  overflow: hidden;
+}
+
+.paper-column:last-child {
+  border-right: none;
+}
+
+/* ── Paper header bars ─────────────────────────────────────────────── */
+.paper-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  height: 42px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.p1-header { background: #eef1ff; }
+.p2-header { background: #fff0f0; }
+.p3-header { background: #edf9f5; }
+
+.paper-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.p1-dot { background: #4361ee; }
+.p2-dot { background: #e05c5c; }
+.p3-dot { background: #16a085; }
+
+.paper-title {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #1a1a2e;
+}
+
+.paper-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+}
+.paper-close:hover {
+  color: #333;
+  background: rgba(0,0,0,0.06);
+}
+
+/* ── Paper body (scrollable) ───────────────────────────────────────── */
+.paper-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Empty / drop zone ─────────────────────────────────────────────── */
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  min-height: 300px;
+  padding: 2rem;
+  border: 2px dashed #d0ccc5;
+  border-radius: 10px;
+  margin: 16px;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+}
+
+.drop-zone.drag-over {
+  border-color: #5b3de8;
+  background: #f5f3ff;
+}
+
+.drop-icon {
+  font-size: 32px;
+  opacity: 0.4;
+}
+
+.drop-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.drop-sub {
+  font-size: 11px;
+  color: #999;
+  margin-top: -4px;
+}
+
+.url-input {
+  width: 100%;
+  max-width: 280px;
+  padding: 7px 12px;
+  border: 1px solid #ddd9d2;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #333;
+  background: #fff;
+  outline: none;
+  margin-top: 4px;
+  transition: border-color 0.15s;
+}
+.url-input:focus {
+  border-color: #5b3de8;
+}
+.url-input::placeholder {
+  color: #bbb;
+}
+
+/* ── Agent panel (floating) ────────────────────────────────────────── */
+.agent-panel {
+  position: absolute;
+  bottom: 32px;
+  right: 24px;
+  width: 300px;
+  background: #fff;
+  border: 1px solid #e0ddd8;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  transition: opacity 0.15s;
+}
+
+/* ── A. Drag handle ─────────────────────────────────────────────────── */
+.agent-handle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #f7f6f3;
+  border-bottom: 1px solid #eeebe5;
+  cursor: grab;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.agent-handle:active {
+  cursor: grabbing;
+}
+
+.grip-dots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 2px;
+}
+
+.grip-dots span {
+  display: block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #c5c2ba;
+}
+
+.agent-label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.agent-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2ecc71;
+  flex-shrink: 0;
+}
+
+.agent-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a1a2e;
+  letter-spacing: 0.01em;
+}
+
+.handle-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.handle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: #aaa;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.handle-btn:hover {
+  color: #333;
+  background: rgba(0,0,0,0.06);
+}
+
+/* ── Agent sections shared ──────────────────────────────────────────── */
+.agent-section {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0ede8;
+}
+.agent-section:last-child {
+  border-bottom: none;
+}
+
+/* ── B. Question chips ──────────────────────────────────────────────── */
+.chips-section {
+  padding: 10px 12px;
+}
+
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  font-family: inherit;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid #d8d5ce;
+  background: #f5f4f1;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chip:hover {
+  border-color: #b0adaa;
+  color: #333;
+}
+
+.chip.active {
+  background: #ede8fd;
+  border-color: #7b61ff;
+  color: #5b3de8;
+  font-weight: 500;
+}
+
+.chip-custom {
+  border-style: dashed;
+  border-color: #c5c2ba;
+  color: #999;
+  background: transparent;
+}
+.chip-custom:hover {
+  border-color: #7b61ff;
+  color: #5b3de8;
+  background: #f5f3ff;
+}
+
+/* ── C. Custom input + Run ──────────────────────────────────────────── */
+.run-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid #ddd9d2;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #333;
+  background: #faf9f7;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.custom-input:focus {
+  border-color: #5b3de8;
+  background: #fff;
+}
+.custom-input::placeholder {
+  color: #bbb;
+}
+
+.run-btn {
+  width: 100%;
+  padding: 9px;
+  background: #5b3de8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.run-btn:hover {
+  background: #4a2fd6;
+}
+.run-btn:active {
+  transform: scale(0.98);
+}
+.run-btn:disabled {
+  background: #b0a8e0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── D. Results area ────────────────────────────────────────────────── */
+.results-section {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 10px 14px;
+  border-bottom: none;
+}
+
+.results-empty {
+  font-size: 12px;
+  color: #bbb;
+  text-align: center;
+  padding: 16px 0;
+}
+
+/* ── Minimised pill ─────────────────────────────────────────────────── */
+.agent-pill {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  right: 24px;
+  background: #5b3de8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 7px 16px;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  z-index: 1001;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s;
+  user-select: none;
+}
+.agent-pill:hover {
+  background: #4a2fd6;
+}
+
+/* ── Scrollbar styling ──────────────────────────────────────────────── */
+.paper-body::-webkit-scrollbar,
+.results-section::-webkit-scrollbar {
+  width: 5px;
+}
+.paper-body::-webkit-scrollbar-track,
+.results-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+.paper-body::-webkit-scrollbar-thumb,
+.results-section::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+.paper-body::-webkit-scrollbar-thumb:hover,
+.results-section::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+/* ── Highlighted paragraph (set by JS when source chip is clicked) ─── */
+.highlighted {
+  outline: 2px solid currentColor;
+  border-radius: 4px;
+  background: rgba(91, 61, 232, 0.08);
+  transition: outline 0.3s, background 0.3s;
+}
+.highlighted.fade-out {
+  outline-color: transparent;
+  background: transparent;
+}
+
+/* ── PDF container ──────────────────────────────────────────────────── */
+.pdf-container {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Drag-over highlight on drop zones ──────────────────────────────── */
+.drop-zone.drag-over {
+  border-color: #5b3de8;
+  background: #f5f3ff;
+}
+
+/* ── URL input row (input + file picker side by side) ── */
+.url-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 4px;
+}
+
+.url-row .url-input {
+  flex: 1;
+  margin-top: 0;
+}
+
+/* ── File picker button ── */
+.file-pick-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ddd9d2;
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: border-color 0.15s, background 0.15s;
+}
+.file-pick-btn:hover {
+  border-color: #5b3de8;
+  background: #f5f3ff;
+}
+.file-pick-btn .file-input {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESULT CARDS
+═══════════════════════════════════════════════════════════ */
+
+.result-card {
+  border: 1px solid #eeebe5;
+  border-radius: 9px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: #fff;
+}
+
+.result-card-header {
+  background: #f5f4f1;
+  padding: 6px 11px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-bottom: 1px solid #eeebe5;
+}
+
+.result-answer {
+  padding: 9px 11px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #2a2a3a;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SOURCE CHIPS ROW
+═══════════════════════════════════════════════════════════ */
+
+.result-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 6px 11px 9px;
+  border-top: 1px solid #f0ede8;
+}
+
+/* Base source chip */
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-family: 'SF Mono', 'Fira Mono', 'Consolas', monospace;
+  padding: 3px 9px;
+  border-radius: 100px;
+  border: 1px solid;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  user-select: none;
+}
+
+.source-chip:hover {
+  opacity: 0.75;
+  transform: translateY(-1px);
+}
+
+/* Paper 1 — blue */
+.sc-p1 {
+  background: #eef1ff;
+  border-color: #c0ccf5;
+  color: #2a3db0;
+}
+
+/* Paper 2 — coral/red */
+.sc-p2 {
+  background: #fff0f0;
+  border-color: #f5c0c0;
+  color: #a02020;
+}
+
+/* Paper 3 — teal */
+.sc-p3 {
+  background: #edf9f5;
+  border-color: #b8e8da;
+  color: #0d5e40;
+}
+
+/* Agent inference — grey, not clickable */
+.sc-inference {
+  background: #f5f4f1;
+  border-color: #ddd9d2;
+  color: #999;
+  cursor: default;
+}
+
+.sc-inference:hover {
+  opacity: 1;
+  transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PARAGRAPH HIGHLIGHT (triggered by source chip click)
+═══════════════════════════════════════════════════════════ */
+
+/* Base highlighted state — applied immediately on click */
+.highlighted {
+  border-radius: 4px;
+  outline: 2px solid rgba(91, 61, 232, 0.5);
+  background-color: rgba(91, 61, 232, 0.07) !important;
+  transition: outline 0.8s ease, background-color 0.8s ease;
+}
+
+/* Fade-out state — added after 2 seconds, triggers CSS transition */
+.highlighted.fade-out {
+  outline-color: transparent;
+  background-color: transparent !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SETTINGS POPOVER
+═══════════════════════════════════════════════════════════ */
+
+.settings-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 12px;
+  width: 260px;
+  background: #fff;
+  border: 1px solid #e0ddd8;
+  border-radius: 11px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.13);
+  padding: 14px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.settings-instructions {
+  font-size: 11px;
+  color: #888;
+  line-height: 1.5;
+}
+
+.settings-key-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #ddd9d2;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #333;
+  background: #faf9f7;
+  outline: none;
+}
+
+.settings-key-input:focus {
+  border-color: #5b3de8;
+}
+
+.settings-save-btn {
+  width: 100%;
+  padding: 8px;
+  background: #5b3de8;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings-save-btn:hover {
+  background: #4a2fd6;
+}
+
+.settings-saved {
+  font-size: 11px;
+  color: #16a085;
+  text-align: center;
+  font-weight: 600;
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NO KEY BANNER (shown in results area when key is missing)
+═══════════════════════════════════════════════════════════ */
+
+.no-key-banner {
+  font-size: 12px;
+  color: #888;
+  background: #faf9f7;
+  border: 1px dashed #ddd9d2;
+  border-radius: 8px;
+  padding: 12px 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.no-key-banner strong {
+  color: #5b3de8;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AGENT LOADING STATE
+═══════════════════════════════════════════════════════════ */
+
+.agent-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0 12px;
+  color: #aaa;
+}
+
+.agent-loading-text {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  animation: pulse-text 2s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+/* Gear button — sits above all sibling elements */
+#settingsBtn {
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+/* Ensure buttons inside the handle bar always receive clicks */
+.handle-controls {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.handle-controls .handle-btn {
+  position: relative;
+  z-index: 11;
+  pointer-events: auto;
+  cursor: pointer;
+}

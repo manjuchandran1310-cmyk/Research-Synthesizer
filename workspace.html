@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Agent</title>
+  <link rel="stylesheet" href="workspace.css">
+  <script src="pdf.min.js"></script>
+</head>
+<body>
+
+  <!-- ── PAPERS AREA ── -->
+  <div class="papers-area" id="papersArea">
+
+    <!-- Paper 1 -->
+    <div class="paper-column" id="col-1" data-paper="1">
+      <div class="paper-header p1-header">
+        <span class="paper-dot p1-dot"></span>
+        <span class="paper-title" id="title-1">Paper 1</span>
+        <button class="paper-close" data-col="1" title="Close paper">×</button>
+      </div>
+      <div class="paper-body" id="body-1">
+        <div class="drop-zone" id="drop-1">
+          <div class="drop-icon">📄</div>
+          <p class="drop-label">Drop a PDF or paste a URL</p>
+          <p class="drop-sub">Drag a file here, paste a URL, or pick a file</p>
+          <div class="url-row">
+            <input type="text" class="url-input" id="url-1"
+                   placeholder="Paste any URL or DOI…" />
+            <label class="file-pick-btn" title="Choose a PDF file">
+              📎
+              <input type="file" class="file-input" id="file-1"
+                     accept=".pdf,application/pdf" />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paper 2 -->
+    <div class="paper-column" id="col-2" data-paper="2">
+      <div class="paper-header p2-header">
+        <span class="paper-dot p2-dot"></span>
+        <span class="paper-title" id="title-2">Paper 2</span>
+        <button class="paper-close" data-col="2" title="Close paper">×</button>
+      </div>
+      <div class="paper-body" id="body-2">
+        <div class="drop-zone" id="drop-2">
+          <div class="drop-icon">📄</div>
+          <p class="drop-label">Drop a PDF or paste a URL</p>
+          <p class="drop-sub">Drag a file here, paste a URL, or pick a file</p>
+          <div class="url-row">
+            <input type="text" class="url-input" id="url-2"
+                   placeholder="Paste any URL or DOI…" />
+            <label class="file-pick-btn" title="Choose a PDF file">
+              📎
+              <input type="file" class="file-input" id="file-2"
+                     accept=".pdf,application/pdf" />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paper 3 -->
+    <div class="paper-column" id="col-3" data-paper="3">
+      <div class="paper-header p3-header">
+        <span class="paper-dot p3-dot"></span>
+        <span class="paper-title" id="title-3">Paper 3</span>
+        <button class="paper-close" data-col="3" title="Close paper">×</button>
+      </div>
+      <div class="paper-body" id="body-3">
+        <div class="drop-zone" id="drop-3">
+          <div class="drop-icon">📄</div>
+          <p class="drop-label">Drop a PDF or paste a URL</p>
+          <p class="drop-sub">Drag a file here, paste a URL, or pick a file</p>
+          <div class="url-row">
+            <input type="text" class="url-input" id="url-3"
+                   placeholder="Paste any URL or DOI…" />
+            <label class="file-pick-btn" title="Choose a PDF file">
+              📎
+              <input type="file" class="file-input" id="file-3"
+                     accept=".pdf,application/pdf" />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /papers-area -->
+
+
+  <!-- ── AGENT PANEL (floating) ── -->
+  <div class="agent-panel" id="agentPanel">
+
+    <!-- SETTINGS POPOVER — must be INSIDE agent-panel so position:absolute works -->
+    <div class="settings-popover" id="settingsPopover" style="display:none;">
+      <div class="settings-title">GROK API key</div>
+      <p class="settings-instructions">
+        Get a free key at <strong>console.groq.com</strong>
+      </p>
+      <input
+        type="password"
+        id="apiKeyInput"
+        class="settings-key-input"
+        placeholder="Paste your API key here"
+        autocomplete="off"
+      />
+      <button class="settings-save-btn" id="saveApiKeyBtn">Save</button>
+      <div class="settings-saved" id="settingsSaved">Saved ✓</div>
+    </div>
+
+    <!-- A. Drag handle -->
+    <div class="agent-handle" id="agentHandle">
+      <div class="grip-dots">
+        <span></span><span></span>
+        <span></span><span></span>
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <div class="agent-label-wrap">
+        <span class="agent-status-dot"></span>
+        <span class="agent-label">SynthXis AI</span>
+      </div>
+      <div class="handle-controls">
+        <button class="handle-btn" id="settingsBtn" title="Settings">⚙</button>
+        <button class="handle-btn" id="minimiseBtn" title="Minimise">–</button>
+        <button class="handle-btn" id="closePanelBtn" title="Close">×</button>
+      </div>
+    </div>
+
+    <!-- B. Question chips -->
+    <div class="agent-section chips-section">
+      <div class="chips-wrap" id="chipsWrap">
+        <button class="chip active" data-question="central argument">central argument</button>
+        <button class="chip active" data-question="contradictions">contradictions</button>
+        <button class="chip" data-question="methodology gaps">methodology gaps</button>
+        <button class="chip" data-question="missing context">missing context</button>
+        <button class="chip" data-question="unanswered questions">unanswered questions</button>
+        <button class="chip" data-question="shared vs contested claims">shared vs contested claims</button>
+        <button class="chip chip-custom" id="customChip">+ your question</button>
+      </div>
+    </div>
+
+    <!-- C. Custom input + Run -->
+    <div class="agent-section run-section">
+      <input type="text" id="customQuestion" class="custom-input"
+             placeholder="type a custom question..." />
+      <button class="run-btn" id="runBtn">Run ↗</button>
+    </div>
+
+    <!-- D. Results -->
+    <div class="agent-section results-section" id="resultsSection">
+      <div class="results-empty" id="resultsEmpty">Results will appear here</div>
+      <div id="resultsContainer"></div>
+    </div>
+
+  </div><!-- /agent-panel -->
+
+
+  <!-- ── MINIMISED PILL ── -->
+  <div class="agent-pill" id="agentPill">
+    SynthXis · <span id="pillCount">0</span> results ↑
+  </div>
+
+  <script src="workspace.js"></script>
+</body>
+</html>
